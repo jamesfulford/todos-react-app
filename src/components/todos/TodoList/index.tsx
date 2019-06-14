@@ -7,7 +7,7 @@ export default function TodoList () {
     useEffect(() => {
         axios({
             method: 'GET',
-            url: 'http://localhost:4242/api/todos'
+            url: '/api/todos'
         })
             .then(r => {
                 return r.data;
@@ -17,7 +17,9 @@ export default function TodoList () {
                 setTodos(data)
             })
             .catch(console.error);
-    });
+        },
+        [ todos ],
+    );
     if (todos === null) {
         return (<div>Loading...</div>)
     }
