@@ -1,32 +1,31 @@
 import axios from "axios";
 import { Todo, TodoResponse } from "./todo.type";
 
-const _extractData = r => r.data;
 const BASE_URL: string = '/api/todos';
 const TODO_URL = (todo: TodoResponse): string => `${BASE_URL}/${todo._id}`;
 
 // Core methods
-export const INDEX = (): Promise<TodoResponse[]> => axios({
+export const INDEX = async (): Promise<TodoResponse[]> => (await axios({
     method: 'GET',
     url: BASE_URL,
-}).then(_extractData);
+})).data;
 
-export const CREATE = (todo: Todo): Promise<TodoResponse> => axios({
+export const CREATE = async(todo: Todo): Promise<TodoResponse> => (await axios({
     method: 'POST',
     url: BASE_URL,
     data: todo,
-}).then(_extractData);
+})).data;
 
-export const DELETE = (todo: TodoResponse): Promise<void> => axios({
+export const DELETE = async (todo: TodoResponse): Promise<void> => (await axios({
     method: 'DELETE',
     url: TODO_URL(todo),
-}).then(_extractData);
+})).data;
 
-export const UPDATE = (todo: TodoResponse): Promise<TodoResponse> => axios({
+export const UPDATE = async (todo: TodoResponse): Promise<TodoResponse> => (await axios({
     method: 'PUT',
     url: TODO_URL(todo),
     data: todo,
-}).then(_extractData);
+})).data;
 
 // Convenience methods
 export const TOGGLE_COMPLETION = (todo: TodoResponse): Promise<TodoResponse> => UPDATE({
