@@ -1,17 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import axios, { AxiosRequestConfig } from 'axios';
 import TodoItem from '../TodoItem';
 import TodoForm from '../TodoForm';
 import { TodoResponse, Todo } from '../todo.type';
-import { TODOS_INDEX, TODOS_CREATE } from '../requests';
+import * as TodoService from '../TodoService';
 
 export default function TodoList () {
     const [todos, setTodos] = useState<TodoResponse[]>(null);
     useEffect(() => {
-        axios(TODOS_INDEX())
-            .then(r => {
-                return r.data;
-            })
+        TodoService.INDEX()
             .then((data: TodoResponse[]) => {
                 setTodos(data);
             })
@@ -26,8 +22,7 @@ export default function TodoList () {
             <h1><pre>TODO(jamesfulford):</pre></h1>
             <TodoForm
                 onSubmit={(t: Todo) => {
-                    axios(TODOS_CREATE(t))
-                        .then(r => r.data)
+                    TodoService.CREATE(t)
                         .then((newTodo: TodoResponse) => {
                             setTodos([ newTodo, ...todos ]);
                         })
