@@ -35,7 +35,7 @@ export default function TodoList () {
                 onSubmit={(t: Todo) => {
                     TodoService.CREATE(t)
                         .then((newTodo: TodoResponse) => {
-                            setTodos([ newTodo, ...todos ]);
+                            setTodos([ ...todos, newTodo ]);
                         })
                         .catch(console.error);
                 }}
