@@ -15,9 +15,6 @@ export default function TodoList () {
                 .catch(console.error);
         }
     });
-    if (todos === null) {
-        return (<div>Loading...</div>)
-    }
 
     // Avoid defining new callback for each todo
     const deleteTodo = (todo: TodoResponse) => {
@@ -50,14 +47,18 @@ export default function TodoList () {
                 }}
             />
             <ul>
-                {todos.map(t => (
-                    <TodoItem
-                        todo={t}
-                        key={t._id}
-                        onDelete={() => deleteTodo(t)}
-                        onTap={() => toggleTodo(t)}
-                    />
-                ))}
+                {
+                    todos
+                        ? todos.map(t => (
+                            <TodoItem
+                                todo={t}
+                                key={t._id}
+                                onDelete={() => deleteTodo(t)}
+                                onTap={() => toggleTodo(t)}
+                            />
+                        ))
+                        : (<div>Loading...</div>)
+                }
             </ul>
         </div>
     );
