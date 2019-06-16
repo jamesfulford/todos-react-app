@@ -7,13 +7,14 @@ import * as TodoService from '../TodoService';
 export default function TodoList () {
     const [todos, setTodos] = useState<TodoResponse[]>(null);
     useEffect(() => {
-        TodoService.INDEX()
-            .then((data: TodoResponse[]) => {
-                setTodos(data);
-            })
-            .catch(console.error);
-        },
-    );
+        if (!todos) {
+            TodoService.INDEX()
+                .then((data: TodoResponse[]) => {
+                    setTodos(data);
+                })
+                .catch(console.error);
+        }
+    });
     if (todos === null) {
         return (<div>Loading...</div>)
     }
