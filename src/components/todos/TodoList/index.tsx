@@ -1,26 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import TodoItem from '../TodoItem';
-
-const TODOS_INDEX: AxiosRequestConfig = {
-    method: 'GET',
-    url: '/api/todos',
-};
+import TodoForm from '../TodoForm';
+import { TodoResponse, Todo } from '../todo.type';
+import { TODOS_INDEX, TODOS_CREATE } from '../requests';
 
 export default function TodoList () {
-    const [todos, setTodos] = useState(null);
+    const [todos, setTodos] = useState<TodoResponse[]>(null);
     useEffect(() => {
-        axios(TODOS_INDEX)
+        axios(TODOS_INDEX())
             .then(r => {
                 return r.data;
             })
-            .then(data => {
-                console.log(data);
-                setTodos(data)
+            .then((data: TodoResponse[]) => {
+                setTodos(data);
             })
             .catch(console.error);
         },
-        [ todos ],
     );
     if (todos === null) {
         return (<div>Loading...</div>)
@@ -28,6 +24,16 @@ export default function TodoList () {
     return (
         <div>
             <h1><pre>TODO(jamesfulford):</pre></h1>
+            <TodoForm
+                onSubmit={(t: Todo) => {
+                    axios(TODOS_CREATE(t))
+                        .then(r => r.data)
+                        .then((newTodo: TodoResponse) => {
+                            setTodos([ newTodo, ...todos ]);
+                        })
+                        .catch(console.error);
+                }}
+            />
             <ul>
                 {todos.map(t => (<TodoItem todo={t} key={t._id} />))}
             </ul>

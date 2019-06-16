@@ -5,8 +5,10 @@
 export type TodoId = string;
 
 export class Todo {
-    _id: TodoId;
     completed: boolean;
     name: string;
+}
+export class TodoResponse extends Todo {
+    _id: TodoId;
     created_data: string;
 }
