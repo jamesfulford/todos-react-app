@@ -4,6 +4,7 @@ import TodoForm from '../TodoForm';
 import { TodoResponse, Todo } from '../todo.type';
 import * as TodoService from '../TodoService';
 
+// NOTE(jamesfulford): React.Suspense does not support data-fetching yet (16.8.6)
 export default function TodoList () {
     const [todos, setTodos] = useState<TodoResponse[]>(null);
     useEffect(() => {
@@ -17,33 +18,34 @@ export default function TodoList () {
     });
 
     // Avoid defining new callback for each todo
-    const deleteTodo = (todo: TodoResponse) => {
-        TodoService.DELETE(todo)
-            .then(() => {
-                setTodos(todos.filter(({ _id }) => _id !== todo._id ));
-            })
-            .catch(console.error);
+    const deleteTodo = async (todo: TodoResponse) => {
+        try {
+            await TodoService.DELETE(todo)
+            setTodos(todos.filter(({ _id }) => _id !== todo._id));
+        } catch (e) {
+            console.error(e);
+        }
     }
-    const toggleTodo = (todo: TodoResponse) => {
-        console.log('toggling...');
-        TodoService.TOGGLE_COMPLETION(todo)
-            .then((updatedTodo) => {
-                console.log('toggled...');
-                setTodos(todos.map(t => t._id === updatedTodo._id ? updatedTodo : t))
-            })
-            .catch(console.error);
+    const toggleTodo = async (todo: TodoResponse) => {
+        try {
+            const updatedTodo: TodoResponse = await TodoService.TOGGLE_COMPLETION(todo);
+            setTodos(todos.map(t => t._id === updatedTodo._id ? updatedTodo : t));
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     return (
         <div>
             <h1><pre>TODO(jamesfulford):</pre></h1>
             <TodoForm
-                onSubmit={(t: Todo) => {
-                    TodoService.CREATE(t)
-                        .then((newTodo: TodoResponse) => {
-                            setTodos([ ...todos, newTodo ]);
-                        })
-                        .catch(console.error);
+                onSubmit={async (t: Todo) => {
+                    try {
+                        const newTodo: TodoResponse = await TodoService.CREATE(t);
+                        setTodos([...todos, newTodo]);
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }}
             />
             <ul>
