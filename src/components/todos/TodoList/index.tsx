@@ -1,14 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
+import axios, { AxiosRequestConfig } from 'axios';
 import TodoItem from '../TodoItem';
+
+const TODOS_INDEX: AxiosRequestConfig = {
+    method: 'GET',
+    url: '/api/todos',
+};
 
 export default function TodoList () {
     const [todos, setTodos] = useState(null);
     useEffect(() => {
-        axios({
-            method: 'GET',
-            url: '/api/todos'
-        })
+        axios(TODOS_INDEX)
             .then(r => {
                 return r.data;
             })
@@ -23,5 +25,13 @@ export default function TodoList () {
     if (todos === null) {
         return (<div>Loading...</div>)
     }
-    return todos.map(t => (<TodoItem todo={t} />))
+    return (
+        <div>
+            <h1><pre>TODO(jamesfulford):</pre></h1>
+            <ul>
+                {todos.map(t => (<TodoItem todo={t} key={t._id} />))}
+            </ul>
+        </div>
+    );
+
 }
