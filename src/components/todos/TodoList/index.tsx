@@ -27,6 +27,15 @@ export default function TodoList () {
             })
             .catch(console.error);
     }
+    const toggleTodo = (todo: TodoResponse) => {
+        console.log('toggling...');
+        TodoService.TOGGLE_COMPLETION(todo)
+            .then((updatedTodo) => {
+                console.log('toggled...');
+                setTodos(todos.map(t => t._id === updatedTodo._id ? updatedTodo : t))
+            })
+            .catch(console.error);
+    }
 
     return (
         <div>
@@ -46,6 +55,7 @@ export default function TodoList () {
                         todo={t}
                         key={t._id}
                         onDelete={() => deleteTodo(t)}
+                        onTap={() => toggleTodo(t)}
                     />
                 ))}
             </ul>
